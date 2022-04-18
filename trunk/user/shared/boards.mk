@@ -8,11 +8,11 @@ include $(ROOTDIR)/user/shared/board.mk
 
 ##################################################################
 
-ifneq ($(CONFIG_BOARD_RAM_SIZE),)
+/*ifneq ($(CONFIG_BOARD_RAM_SIZE),)
 CFLAGS += -DBOARD_RAM_SIZE=$(CONFIG_BOARD_RAM_SIZE)
 else
 CFLAGS += -DBOARD_RAM_SIZE=128
-endif
+endif*/
 
 BOARD_2G_IN_SOC=0
 BOARD_5G_IN_SOC=0
