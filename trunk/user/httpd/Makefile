@@ -35,7 +35,7 @@ ifdef CONFIG_RTL8367
 OBJS += switch_rtl8367.o
 CFLAGS += -I$(ROOTDIR)/$(LINUXDIR)/drivers/net/rtl8367
 else
-ifdef CONFIG_RAETH
+ifdef CONFIG_MT7530_GSW
 OBJS += switch_mtk_esw.o
 CFLAGS += -I$(ROOTDIR)/$(LINUXDIR)/drivers/net/raeth
 else
