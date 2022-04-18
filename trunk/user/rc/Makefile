@@ -47,7 +47,7 @@ CFLAGS += -I$(ROOTDIR)/$(LINUXDIR)/drivers/net/rtl8367
 else
 ifdef CONFIG_RAETH
 OBJS += switch_mtk_esw.o
-CFLAGS += -I$(ROOTDIR)/$(LINUXDIR)/drivers/net/ethernet/raeth
+CFLAGS += -I$(ROOTDIR)/$(LINUXDIR)/drivers/net/raeth
 else
 ifdef CONFIG_RAETH_ESW
 OBJS += switch_mtk_esw.o
