@@ -1,11 +1,11 @@
-/* K2P */
+/* CR660x */
 
-#define BOARD_PID		"K2P"
-#define BOARD_NAME		"K2P"
-#define BOARD_DESC		"PHICOMM K2P Wireless Router"
-#define BOARD_VENDOR_NAME	"PHICOMM"
-#define BOARD_VENDOR_URL	"http://www.phicomm.com/"
-#define BOARD_MODEL_URL		"http://www.phicomm.com/"
+#define BOARD_PID		      "CR660x"
+#define BOARD_NAME		    "CR660x"
+#define BOARD_DESC		    "CR660x Wireless Router"
+#define BOARD_VENDOR_NAME	"Beijing Xiaomi Technology Co., Ltd."
+#define BOARD_VENDOR_URL	"http://www.mi.com/"
+#define BOARD_MODEL_URL		"http://www.mi.com/"
 #define BOARD_BOOT_TIME		30
 #define BOARD_FLASH_TIME	120
 
