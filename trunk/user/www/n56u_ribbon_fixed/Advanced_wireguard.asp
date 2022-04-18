@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title><#Web_Title#> - AdGuard Home</title>
+<title><#Web_Title#> - <#menu5_35#></title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="-1">
@@ -18,6 +18,7 @@
 <script type="text/javascript" src="/state.js"></script>
 <script type="text/javascript" src="/general.js"></script>
 <script type="text/javascript" src="/itoggle.js"></script>
+<script type="text/javascript" src="/client_function.js"></script>
 <script type="text/javascript" src="/popup.js"></script>
 <script type="text/javascript" src="/help.js"></script>
 <script type="text/javascript" src="/help_b.js"></script>
@@ -25,8 +26,8 @@
 var $j = jQuery.noConflict();
 
 $j(document).ready(function() {
-
-	init_itoggle('adg_enable');
+	
+	init_itoggle('wireguard_enable');
 
 });
 
@@ -35,33 +36,37 @@ $j(document).ready(function() {
 
 <% login_state_hook(); %>
 
+
 function initial(){
 	show_banner(2);
-	show_menu(5,16);
+	show_menu(5,17,0);
 	showmenu();
 	show_footer();
 
+}
+function showmenu(){
+showhide_div('allink', found_app_aliddns());
+showhide_div('zelink', found_app_zerotier());
+showhide_div('ddlink', found_app_ddnsto());
 }
 
 function applyRule(){
 //	if(validForm()){
 		showLoading();
 		
-		document.form.action_mode.value = " Apply ";
-		document.form.current_page.value = "/Advanced_adguardhome.asp";
+		document.form.action_mode.value = " Restart ";
+		document.form.current_page.value = "/Advanced_wireguard.asp";
 		document.form.next_page.value = "";
 		
 		document.form.submit();
 //	}
 }
 
-function showmenu(){
-showhide_div('sdnslink', 0);
-}
-
 function done_validating(action){
 	refreshpage();
 }
+
+
 
 </script>
 </head>
@@ -84,17 +89,14 @@ function done_validating(action){
 
 	<form method="post" name="form" id="ruleForm" action="/start_apply.htm" target="hidden_frame">
 
-	<input type="hidden" name="current_page" value="Advanced_adguardhome.asp">
+	<input type="hidden" name="current_page" value="Advanced_wireguard.asp">
 	<input type="hidden" name="next_page" value="">
 	<input type="hidden" name="next_host" value="">
-	<input type="hidden" name="sid_list" value="AdguardHomeConf;">
+	<input type="hidden" name="sid_list" value="WIREGUARD;">
 	<input type="hidden" name="group_id" value="">
 	<input type="hidden" name="action_mode" value="">
 	<input type="hidden" name="action_script" value="">
-	<input type="hidden" name="wan_ipaddr" value="<% nvram_get_x("", "wan0_ipaddr"); %>" readonly="1">
-	<input type="hidden" name="wan_netmask" value="<% nvram_get_x("", "wan0_netmask"); %>" readonly="1">
-	<input type="hidden" name="dhcp_start" value="<% nvram_get_x("", "dhcp_start"); %>">
-	<input type="hidden" name="dhcp_end" value="<% nvram_get_x("", "dhcp_end"); %>">
+
 
 	<div class="container-fluid">
 		<div class="row-fluid">
@@ -116,67 +118,91 @@ function done_validating(action){
 				<div class="row-fluid">
 					<div class="span12">
 						<div class="box well grad_colour_dark_blue">
-							<h2 class="box_head round_top"><#menu5_33#> - <#menu5_33_1#></h2>
+							<h2 class="box_head round_top"><#menu5_30#> - <#menu5_35#></h2>
 							<div class="round_bottom">
 							<div>
                             <ul class="nav nav-tabs" style="margin-bottom: 10px;">
-								<li id="sdnslink" style="display:none">
-                                    <a href="Advanced_smartdns.asp"><#menu5_24#></a>
+								<li id="allink" style="display:none">
+                                    <a href="Advanced_aliddns.asp"><#menu5_23_1#></a>
                                 </li>
-								 <li class="active">
-                                    <a href="Advanced_adguardhome.asp"><#menu5_33#></a>
+								<li id="zelink" style="display:none">
+                                    <a href="Advanced_zerotier.asp"><#menu5_32_1#></a>
+                                </li>
+								<li id="ddlink" style="display:none">
+                                    <a href="Advanced_ddnsto.asp"><#menu5_34_1#></a>
+                                </li>
+								<li class="active">
+                                    <a href="Advanced_wireguard.asp"><#menu5_35_1#></a>
                                 </li>
                             </ul>
                         </div>
 								<div class="row-fluid">
 									<div id="tabMenu" class="submenuBlock"></div>
 									<div class="alert alert-info" style="margin: 10px;">
-									<p>AdGuard Home 是一款全网广告拦截与反跟踪软件。在您将其安装完毕后，它将保护您所有家用设备，同时您不再需要安装任何客户端软件。随着物联网与连接设备的兴起，掌控您自己的整个网络环境变得越来越重要。默认用户名密码均为adguardhome，可在/etc/storage/adg.sh内修改。
+									<p>WireGuard 是一个易于配置、快速且安全的开源VPN<br>
 									</p>
-									AdGuard Home  主页<a href="https://adguard.com/" target="blank"><i><u>https://adguard.com/</u></i></a>
 									</div>
 
+
+
 									<table width="100%" align="center" cellpadding="4" cellspacing="0" class="table">
+
+
 										<tr>
-											<th width="30%" style="border-top: 0 none;">启用AdGuardHome</th>
+										<th width="30%" style="border-top: 0 none;">启用wireguard客户端</th>
 											<td style="border-top: 0 none;">
 													<div class="main_itoggle">
-													<div id="adg_enable_on_of">
-														<input type="checkbox" id="adg_enable_fake" <% nvram_match_x("", "adg_enable", "1", "value=1 checked"); %><% nvram_match_x("", "adg_enable", "0", "value=0"); %>  />
+													<div id="wireguard_enable_on_of">
+														<input type="checkbox" id="wireguard_enable_fake" <% nvram_match_x("", "wireguard_enable", "1", "value=1 checked"); %><% nvram_match_x("", "wireguard_enable", "0", "value=0"); %>  />
 													</div>
 												</div>
 												<div style="position: absolute; margin-left: -10000px;">
-													<input type="radio" value="1" name="adg_enable" id="adg_enable_1" class="input" value="1" <% nvram_match_x("", "adg_enable", "1", "checked"); %> /><#checkbox_Yes#>
-													<input type="radio" value="0" name="adg_enable" id="adg_enable_0" class="input" value="0" <% nvram_match_x("", "adg_enable", "0", "checked"); %> /><#checkbox_No#>
+													<input type="radio" value="1" name="wireguard_enable" id="wireguard_enable_1" class="input" value="1" <% nvram_match_x("", "wireguard_enable", "1", "checked"); %> /><#checkbox_Yes#>
+													<input type="radio" value="0" name="wireguard_enable" id="wireguard_enable_0" class="input" value="0" <% nvram_match_x("", "wireguard_enable", "0", "checked"); %> /><#checkbox_No#>
 												</div>
 											</td>
+
 										</tr>
-										</tr>
-                                         <tr>
-											<th><a class="help_tooltip" href="javascript: void(0)" onmouseover="openTooltip(this, 1, 1);">DNS重定向</a></th>
-											<td>
-												<select name="adg_redirect" class="input" style="width: 200px">
-													<option value="0" <% nvram_match_x("","adg_redirect", "0","selected"); %>>无</option>
-													<option value="1" <% nvram_match_x("","adg_redirect", "1","selected"); %>>作为dnsmasq的上游服务器</option>
-													<option value="2" <% nvram_match_x("","adg_redirect", "2","selected"); %>>重定向53端口到AdGuardHome</option>
-												</select>
-											</td>
-										</tr>
-										<tr>
-											<th>WEB管理地址:</th>
-											<td>
-											<a href="http://<% nvram_get_x("", "lan_ipaddr"); %>:3030">http://<% nvram_get_x("", "lan_ipaddr"); %>:3030</a>
-											</td>
-										</tr>
-										
 
 										<tr>
-											<td colspan="2" style="border-top: 0 none;">
+										<th>本机密钥key </th>
+				<td>
+					<input type="text" class="input" name="wireguard_localkey" id="wireguard_localkey" style="width: 200px" value="<% nvram_get_x("","wireguard_localkey"); %>" />
+				</td>
+
+										</tr>
+
+										<tr>
+										<th>本机IP（格式 10.0.0.2/24）</th>
+				<td>
+					<input type="text" class="input" name="wireguard_localip" id="wireguard_localip" style="width: 200px" value="<% nvram_get_x("","wireguard_localip"); %>" />
+				</td>
+
+										</tr>
+									
+										<tr>
+										<th>对端密钥key </th>
+				<td>
+					<input type="text" class="input" name="wireguard_peerkey" id="wireguard_peerkey" style="width: 200px" value="<% nvram_get_x("","wireguard_peerkey"); %>" />
+				</td>
+
+										</tr>
+										<tr>
+										<th>对端ip:端口（格式 223.5.6.6:4900)</th>
+				<td>
+					<input type="text" class="input" name="wireguard_peerip" id="wireguard_peerip" style="width: 200px" value="<% nvram_get_x("","wireguard_peerip"); %>" />
+				</td>
+
+										</tr>
+										<tr>
+											<td colspan="4" style="border-top: 0 none;">
 												<br />
 												<center><input class="btn btn-primary" style="width: 219px" type="button" value="<#CTL_apply#>" onclick="applyRule()" /></center>
 											</td>
 										</tr>
-									</table>
+</table>
+
+										
 								</div>
 							</div>
 						</div>
