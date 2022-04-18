@@ -238,6 +238,8 @@ dir_$(CONFIG_FIRMWARE_INCLUDE_KOOLPROXY)		+= koolproxy
 dir_$(CONFIG_FIRMWARE_INCLUDE_ADBYBY)			+= adbyby
 dir_$(CONFIG_FIRMWARE_INCLUDE_ALIDDNS)			+= aliddns
 dir_$(CONFIG_FIRMWARE_INCLUDE_NVPPROXY)			+= nvpproxy
+dir_$(CONFIG_FIRMWARE_INCLUDE_ALDRIVER)	                += aliyundrive-webdav
+dir_$(CONFIG_FIRMWARE_INCLUDE_SQM)			+= sqm-qos
 ifdef CONFIG_MTD_UBI
 ifneq ($(STORAGE_ENABLED),y)
 dir_y							+= optware
