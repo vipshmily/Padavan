@@ -1137,7 +1137,7 @@ extern struct daemon {
   int max_logs;  /* queue limit */
   int cachesize, ftabsize;
   int port, query_port, min_port, max_port;
-  unsigned long local_ttl, neg_ttl, min_ttl, max_ttl, min_cache_ttl, max_cache_ttl, auth_ttl, dhcp_ttl, use_dhcp_ttl;
+  unsigned long local_ttl, neg_ttl, max_ttl, min_cache_ttl, max_cache_ttl, auth_ttl, dhcp_ttl, use_dhcp_ttl;
   char *dns_client_id;
   u32 umbrella_org;
   u32 umbrella_asset;

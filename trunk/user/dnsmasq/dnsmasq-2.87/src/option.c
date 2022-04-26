@@ -106,7 +106,6 @@ struct myoption {
 #define LOPT_PROXY         295
 #define LOPT_GEN_NAMES     296
 #define LOPT_MAXTTL        297
-#define LOPT_MINTTL        397
 #define LOPT_NO_REBIND     298
 #define LOPT_LOC_REBND     299
 #define LOPT_ADD_MAC       300
@@ -180,6 +179,8 @@ struct myoption {
 #define LOPT_FILTER_AAAA   370
 #define LOPT_STRIP_SBNET   371
 #define LOPT_STRIP_MAC     372
+#define LOPT_CONF_OPT      373
+#define LOPT_CONF_SCRIPT   374
 
 #ifdef HAVE_GETOPT_LONG
 static const struct option opts[] =  
@@ -226,6 +227,7 @@ static const struct myoption opts[] =
     { "local", 1, 0, LOPT_LOCAL },
     { "address", 1, 0, 'A' },
     { "conf-file", 2, 0, 'C' },
+    { "conf-script", 1, 0, LOPT_CONF_SCRIPT },
     { "no-resolv", 0, 0, 'R' },
     { "expand-hosts", 0, 0, 'E' },
     { "localmx", 0, 0, 'L' },
@@ -301,7 +303,6 @@ static const struct myoption opts[] =
     { "dhcp-broadcast", 2, 0, LOPT_BROADCAST },
     { "neg-ttl", 1, 0, LOPT_NEGTTL },
     { "max-ttl", 1, 0, LOPT_MAXTTL },
-    { "min-ttl", 1, 0, LOPT_MINTTL },
     { "min-cache-ttl", 1, 0, LOPT_MINCTTL },
     { "max-cache-ttl", 1, 0, LOPT_MAXCTTL },
     { "dhcp-alternate-port", 2, 0, LOPT_ALTPORT },
@@ -440,7 +441,6 @@ static struct {
   { 'T', ARG_ONE, "<integer>", gettext_noop("Specify time-to-live in seconds for replies from /etc/hosts."), NULL },
   { LOPT_NEGTTL, ARG_ONE, "<integer>", gettext_noop("Specify time-to-live in seconds for negative caching."), NULL },
   { LOPT_MAXTTL, ARG_ONE, "<integer>", gettext_noop("Specify time-to-live in seconds for maximum TTL to send to clients."), NULL },
-  { LOPT_MINTTL, ARG_ONE, "<integer>", gettext_noop("Specify time-to-live in seconds for minimum TTL to send to clients."), NULL },
   { LOPT_MAXCTTL, ARG_ONE, "<integer>", gettext_noop("Specify time-to-live ceiling for cache."), NULL },
   { LOPT_MINCTTL, ARG_ONE, "<integer>", gettext_noop("Specify time-to-live floor for cache."), NULL },
   { 'u', ARG_ONE, "<username>", gettext_noop("Change to this user after startup. (defaults to %s)."), CHUSER }, 
@@ -470,6 +470,7 @@ static struct {
   { LOPT_SCRIPTUSR, ARG_ONE, "<username>", gettext_noop("Run lease-change scripts as this user."), NULL },
   { LOPT_SCRIPT_ARP, OPT_SCRIPT_ARP, NULL, gettext_noop("Call dhcp-script with changes to local ARP table."), NULL },
   { '7', ARG_DUP, "<path>", gettext_noop("Read configuration from all the files in this directory."), NULL },
+  { LOPT_CONF_SCRIPT, ARG_DUP, "<path>", gettext_noop("Execute file and read configuration from stdin."), NULL },
   { '8', ARG_ONE, "<facility>|<file>", gettext_noop("Log to this syslog facility or file. (defaults to DAEMON)"), NULL },
   { '9', OPT_LEASE_RO, NULL, gettext_noop("Do not use leasefile."), NULL },
   { '0', ARG_ONE, "<integer>", gettext_noop("Maximum number of concurrent DNS queries. (defaults to %s)"), "!" }, 
@@ -1808,6 +1809,17 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
 	if (file)
 	  {
 	    one_file(file, 0);
+	    free(file);
+	  }
+	break;
+      }
+
+    case LOPT_CONF_SCRIPT: /* --conf-script */
+      {
+	char *file = opt_string_alloc(arg);
+	if (file)
+	  {
+	    one_file(file, LOPT_CONF_SCRIPT);
 	    free(file);
 	  }
 	break;
@@ -3165,7 +3177,6 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
     case 'T':         /* --local-ttl */
     case LOPT_NEGTTL: /* --neg-ttl */
     case LOPT_MAXTTL: /* --max-ttl */
-    case LOPT_MINTTL: /* --min-ttl */
     case LOPT_MINCTTL: /* --min-cache-ttl */
     case LOPT_MAXCTTL: /* --max-cache-ttl */
     case LOPT_AUTHTTL: /* --auth-ttl */
@@ -3178,8 +3189,6 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
 	  daemon->neg_ttl = (unsigned long)ttl;
 	else if (option == LOPT_MAXTTL)
 	  daemon->max_ttl = (unsigned long)ttl;
-	else if (option == LOPT_MINTTL)
-	  daemon->min_ttl = (unsigned long)ttl;
 	else if (option == LOPT_MINCTTL)
 	  {
 	    if (ttl > TTL_FLOOR_LIMIT)
@@ -4972,11 +4981,19 @@ static void read_file(char *file, FILE *f, int hard_opt)
   
   while (fgets(buff, MAXDNAME, f))
     {
-      int white, i;
-      volatile int option = (hard_opt == LOPT_REV_SERV) ? 0 : hard_opt;
+      int white, i, script = 0;
+      volatile int option;
       char *errmess, *p, *arg, *start;
       size_t len;
 
+      if (hard_opt == LOPT_CONF_SCRIPT)
+	{
+	  hard_opt = 0;
+	  script = 1;
+	}
+      
+      option = (hard_opt == LOPT_REV_SERV) ? 0 : hard_opt;
+ 
       /* Memory allocation failure longjmps here if mem_recover == 1 */ 
       if (option != 0 || hard_opt == LOPT_REV_SERV)
 	{
@@ -5090,7 +5107,11 @@ static void read_file(char *file, FILE *f, int hard_opt)
 	  
       if (errmess || !one_opt(option, arg, daemon->namebuff, _("error"), 0, hard_opt == LOPT_REV_SERV))
 	{
-	  sprintf(daemon->namebuff + strlen(daemon->namebuff), _(" at line %d of %s"), lineno, file);
+	  if (script)
+	    sprintf(daemon->namebuff + strlen(daemon->namebuff), _(" in output from %s"), file);
+	  else
+	    sprintf(daemon->namebuff + strlen(daemon->namebuff), _(" at line %d of %s"), lineno, file);
+	  
 	  if (hard_opt != 0)
 	    my_syslog(LOG_ERR, "%s", daemon->namebuff);
 	  else
@@ -5099,7 +5120,6 @@ static void read_file(char *file, FILE *f, int hard_opt)
     }
 
   mem_recover = 0;
-  fclose(f);
 }
 
 #if defined(HAVE_DHCP) && defined(HAVE_INOTIFY)
@@ -5119,7 +5139,7 @@ int option_read_dynfile(char *file, int flags)
 static int one_file(char *file, int hard_opt)
 {
   FILE *f;
-  int nofile_ok = 0;
+  int nofile_ok = 0, do_popen = 0;
   static int read_stdin = 0;
   static struct fileread {
     dev_t dev;
@@ -5127,13 +5147,13 @@ static int one_file(char *file, int hard_opt)
     struct fileread *next;
   } *filesread = NULL;
   
-  if (hard_opt == '7')
+  if (hard_opt == LOPT_CONF_OPT)
     {
       /* default conf-file reading */
       hard_opt = 0;
       nofile_ok = 1;
     }
-
+  
   if (hard_opt == 0 && strcmp(file, "-") == 0)
     {
       if (read_stdin == 1)
@@ -5147,6 +5167,12 @@ static int one_file(char *file, int hard_opt)
       /* ignore repeated files. */
       struct stat statbuf;
     
+      if (hard_opt == LOPT_CONF_SCRIPT)
+	{
+	  hard_opt = 0;
+	  do_popen = 1;
+	}
+      
       if (hard_opt == 0 && stat(file, &statbuf) == 0)
 	{
 	  struct fileread *r;
@@ -5161,8 +5187,13 @@ static int one_file(char *file, int hard_opt)
 	  r->dev = statbuf.st_dev;
 	  r->ino = statbuf.st_ino;
 	}
-      
-      if (!(f = fopen(file, "r")))
+
+      if (do_popen)
+	{
+	  if (!(f = popen(file, "r")))
+	    die(_("cannot execute %s: %s"), file, EC_FILE);
+	}
+      else if (!(f = fopen(file, "r")))
 	{   
 	  if (errno == ENOENT && nofile_ok)
 	    return 1; /* No conffile, all done. */
@@ -5180,7 +5211,21 @@ static int one_file(char *file, int hard_opt)
 	} 
     }
   
-  read_file(file, f, hard_opt);
+  read_file(file, f, do_popen ? LOPT_CONF_SCRIPT : hard_opt);
+
+  if (do_popen)
+    {
+      int rc;
+
+      if ((rc = pclose(f)) == -1)
+	die(_("error executing %s: %s"), file, EC_MISC);
+
+      if (rc != 0)
+	die(_("%s returns non-zero error code"), file, rc+10);
+    }
+  else
+    fclose(f);
+	
   return 1;
 }
 
@@ -5321,6 +5366,7 @@ void read_servers_file(void)
   
   mark_servers(SERV_FROM_FILE);
   read_file(daemon->servers_file, f, LOPT_REV_SERV);
+  fclose(f);
   cleanup_servers();
   check_servers(0);
 }
@@ -5546,7 +5592,7 @@ void read_opts(int argc, char **argv, char *compile_opts)
       free(conffile);
     }
   else
-    one_file(CONFFILE, '7');
+    one_file(CONFFILE, LOPT_CONF_OPT);
 
   /* port might not be known when the address is parsed - fill in here */
   if (daemon->servers)
