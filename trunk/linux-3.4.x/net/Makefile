@@ -71,5 +71,8 @@ obj-$(CONFIG_BATMAN_ADV)	+= batman-adv/
 obj-$(CONFIG_NFC)		+= nfc/
 obj-$(CONFIG_OPENVSWITCH)	+= openvswitch/
 
-obj-$(CONFIG_RA_NAT_HW)		+= nat/hw_nat/
-
+ifeq ($(CONFIG_RA_NAT_HW),y)
+obj-y				              += nat/foe_hook/
+endif
+obj-$(CONFIG_RA_HW_NAT)		+= nat/hw_nat/
+obj-$(CONFIG_SHORTCUT_FE)	+= shortcut-fe/
