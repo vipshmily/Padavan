@@ -625,6 +625,9 @@ struct nvram_pair router_defaults[] = {
 	{ "socks5_s_username", "" },
 	{ "socks5_s_password", "" },
 	{ "ss_turn", "0" },
+	{ "ss_cgroups", "0" },
+	{ "ss_cgoups_cpu_s", "512" },
+	{ "ss_cgoups_mem_s", "20M" },
 	{ "ss_watchcat", "1" },
 	{ "ss_turn_s", "600" },
 	{ "ss_turn_ss", "5" },
@@ -765,7 +768,7 @@ struct nvram_pair router_defaults[] = {
 	{ "frps_enable", "0" },
 #endif
 	
-#if defined(APP_SMARTDNS)	
+#if defined(APP_SMARTDNS)
 	/*SmartDns*/
 	{ "sdns_enable", "0" },
 	{ "snds_name", "smartdns" },
@@ -774,17 +777,24 @@ struct nvram_pair router_defaults[] = {
 	{ "sdns_ipv6_server", "0" },
 	{ "snds_ip_change", "0" },
 	{ "snds_ip_change_time", "30" },
-	{ "sdns_ipv6", "0" },
-	{ "sdns_www", "0" },
-	{ "sdns_www", "0" },
-	{ "sdns_exp", "0" },
-	{ "snds_redirect", "0" },
-	{ "snds_cache", "0" },
-	{ "sdns_ttl", "300" },
-	{ "sdns_ttl_min", "60" },
+	{ "sdns_ipv6", "1" },
+	{ "sdns_www", "1" },
+	{ "sdns_exp", "1" },
+	{ "sdns_exp_ttl", "0" },
+	{ "sdns_exp_ttl_max", "10" },
+	{ "sdns_cache_persist", "1" },
+	{ "snds_redirect", "1" },
+	{ "snds_cache", "10240" },
+	{ "sdns_ttl", "21600" },
+	{ "sdns_ttl_min", "1800" },
 	{ "sdns_ttl_max", "86400" },
 	{ "sdns_coredump", "0" },
 	{ "sdnss_staticnum_x", "0" },
+	{ "sdns_speed", "0" },
+	{ "sdns_address", "0" },
+	{ "sdns_as", "0" },
+	{ "sdns_ipset", "0" },
+	{ "sdns_ns", "0" },
 	{ "sdnse_enable", "0" },
 	{ "sdnse_port", "7053" },
 	{ "sdnse_tcp", "0" },
@@ -798,6 +808,9 @@ struct nvram_pair router_defaults[] = {
 	{ "sdnse_cache", "0" },
 	{ "ss_white", "0" },
 	{ "ss_black", "0" },
+	{ "sdns_change", "2" },
+	{ "sdns_change1", "2" },
+	{ "sdns_change2", "2" },
 #endif
 	
 	/*UnblockNeteaseMusic*/
