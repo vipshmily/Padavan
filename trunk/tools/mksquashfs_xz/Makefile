@@ -1,7 +1,13 @@
-SRC_NAME1=squashfs-4.3
-SRC_NAME2=xz-5.2.4
+SRC_NAME1=squashfs-4.6.1
+SRC_NAME2=xz-5.4.3
+SRC_URL2=https://gigenet.dl.sourceforge.net/project/lzmautils/$(SRC_NAME2).tar.gz
 
-all: config_xz build_xz build_squashfs
+all: extract_xz config_xz build_xz build_squashfs
+
+extract_xz:
+	( if [ ! -d $(SRC_NAME2) ]; then \
+		tar xf $(SRC_NAME2).tar.xz; \
+	fi )
 
 config_xz:
 	( if [ -f ./config_xz_done ]; then \
@@ -14,6 +20,7 @@ configure_xz:
 	( cd $(SRC_NAME2) ; \
 	./autogen.sh ; \
 	./configure \
+		--disable-doc \
 		--disable-shared \
 		--disable-werror \
 		--disable-xz \
@@ -24,7 +31,7 @@ configure_xz:
 	)
 
 build_xz:
-	make -C $(SRC_NAME2)
+	make -j$(HOST_NCPU) -C $(SRC_NAME2)
 
 build_squashfs:
 	make -j$(HOST_NCPU) -C $(SRC_NAME1) XZUTILSDIR=$(shell pwd)/$(SRC_NAME2) ; \
