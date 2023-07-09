@@ -1608,11 +1608,17 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 														</td>
 													</tr>
 
-													<th width="50%"><#InetControl#></th>
+													<tr>
+														<th width="50%">
+															<#InetControl#>
+														</th>
 														<td>
-															<input type="button" id="btn_reconnect" class="btn btn-info" value="<#Connect#>" onclick="submitInternet('Reconnect');">
+															<input type="button" id="btn_reconnect" class="btn btn-info"
+																value=<#Connect#>
+															onclick="submitInternet('Reconnect');">
 														</td>
 													</tr>
+													<tr>
 														<th width="50%">国内IP</th>
 														<td id="domestic_ip"></td>
 													</tr>
@@ -1622,7 +1628,7 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 														<th width="50%">谷歌访问</th>
 														<td id="gg_status"></td>
 													</tr>
-														<th>客户端<#running_status#>
+														<th width="50%">客户端<#running_status#>
 														</th>
 														<td id="ss_status"></td>
 													</tr>
