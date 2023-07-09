@@ -1608,17 +1608,11 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 														</td>
 													</tr>
 
-													<tr>
-														<th width="50%">
-															<#InetControl#>
-														</th>
+													<th width="50%"><#InetControl#></th>
 														<td>
-															<input type="button" id="btn_reconnect" class="btn btn-info"
-																value=<#Connect#>
-															onclick="submitInternet('Reconnect');">
+															<input type="button" id="btn_reconnect" class="btn btn-info" value="<#Connect#>" onclick="submitInternet('Reconnect');">
 														</td>
 													</tr>
-													<tr>
 														<th width="50%">国内IP</th>
 														<td id="domestic_ip"></td>
 													</tr>
