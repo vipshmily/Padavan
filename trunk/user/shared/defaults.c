@@ -823,12 +823,14 @@ struct nvram_pair router_defaults[] = {
 	{ "wyy_flac", "0" },
 	{ "wyy_staticnum_x", "0" },
 	
+	#if defined(APP_ZEROTIER)
 	/*Zerotier*/
 	{ "zerotier_enable", "0" },
 	{ "zerotier_id", "" },
-	{ "zerotier_nat", "0" },
+	{ "zerotier_nat", "1" },
 	{ "zerotier_secret", "" },
 	{ "zero_staticnum_x", "0" },
+#endif
 
 	{ "ss_watchcat", "1" },
 	{ "ss_update_chnroute", "0" },
@@ -1189,6 +1191,7 @@ struct nvram_pair tables_defaults[] = {
 	{ "v2_http2_path_x", "" },
 	{ "v2_tls_x", "0" },
 #endif
+
 #if defined(APP_SMARTDNS)
 	{ "sdnss_enable_x", "" },
 	{ "sdnss_name_x", "" },
@@ -1196,6 +1199,9 @@ struct nvram_pair tables_defaults[] = {
 	{ "sdnss_port_x", "" },
 	{ "sdnss_type_x", "" },
 	{ "sdnss_ipc_x", "" },
+	{ "sdnss_named_x", "" },
+	{ "sdnss_ipset_x", "" },
+	{ "sdnss_non_x", "" },
 #endif
 
 	{"koolproxy_mac_x", "" },
