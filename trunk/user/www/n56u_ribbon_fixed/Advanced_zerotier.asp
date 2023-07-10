@@ -207,8 +207,10 @@ function showMRULESList(){
 									</div>
 
 									<table width="100%" align="center" cellpadding="4" cellspacing="0" class="table">
-										<tr>
-											<th width="30%" style="border-top: 0 none;">启用ZeroTier</th>
+										<tr> <th><#running_status#></th>
+                                            <td id="zerotier_status" colspan="3"></td>
+                                        </tr>
+										<tr><th>ZeroTier 客户端 ID</th>
 				<td>
 					<input type="text" class="input" name="zerotier_id" id="zerotier_id" style="width: 200px" value="<% nvram_get_x("","zerotier_id"); %>" />
 				</td>
