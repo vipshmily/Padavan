@@ -2000,12 +2000,11 @@ static int shadowsocks_action_hook(int eid, webs_t wp, int argc, char **argv)
 		notify_rc(RCN_RESTART_SS_TUNNEL);
 	} else if (!strcmp(ss_action, "Update_gfwlist")) {
 		notify_rc(RCN_RESTART_GFWLIST_UPD);
-	}else if (!strcmp(ss_action, "Update_dlink")) {
+	} else if (!strcmp(ss_action, "Update_dlink")) {
 		notify_rc(RCN_RESTART_DLINK);
-	}else if (!strcmp(ss_action, "Reset_dlink")) {
+	} else if (!strcmp(ss_action, "Reset_dlink")) {
 		notify_rc(RCN_RESTART_REDLINK);
 	}
-	
 	websWrite(wp, "<script>restart_needed_time(%d);</script>\n", needed_seconds);
 	return 0;
 }
@@ -2066,7 +2065,7 @@ applydb_cgi(webs_t wp, char *urlPrefix, char *webDir, int arg,
 				temp=strstr(dbjson[j], "=");
 				strcpy(dbval, temp+1);
 				strncpy(dbvar, dbjson[j], strlen(dbjson[j])-strlen(temp));
-			//logmessage("HTTPD", "name: %s post: %s", dbvar, userm);
+			logmessage("HTTPD", "name: %s post: %s", dbvar, userm);
 			if(strcmp(dbval,userm) == 0)
 				doSystem("dbus remove %s", dbvar);
 			else if(strcmp(dbval,useping) == 0)
@@ -2176,6 +2175,9 @@ static int shadowsocks_status_hook(int eid, webs_t wp, int argc, char **argv)
 	if (ss_status_code == 0){
 		ss_status_code = pids("v2ray");
 	}
+	if (ss_status_code == 0){
+		ss_status_code = pids("xray");
+	}
 
 	if (ss_status_code == 0){
 		ss_status_code = pids("trojan");
@@ -2213,7 +2215,7 @@ static int rules_count_hook(int eid, webs_t wp, int argc, char **argv)
 	websWrite(wp, "function chnroute_count() { return '%s';}\n", count);
 #if defined(APP_SHADOWSOCKS)
 	memset(count, 0, sizeof(count));
-	fstream = popen("cat /etc/storage/gfwlist/gfwlist_list.conf |wc -l","r");
+	fstream = popen("cat /etc/storage/gfwlist/gfwlist_listnew.conf |wc -l","r");
 	if(fstream) {
 		fgets(count, sizeof(count), fstream);
 		pclose(fstream);
