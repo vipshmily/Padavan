@@ -113,6 +113,9 @@ struct nvram_pair router_defaults[] = {
 	{ "viptv_gateway", "0.0.0.0" },
 
 	/* PPP VPN parameters */
+	{ "wan_pppoe_mwanenable", "0" },		/* MWAN support */
+	{ "wan_pppoe_sync", "1" },		/* PPP sync support */
+	{ "wan_pppoe_num", "1" },		/* PPP username */
 	{ "wan_pppoe_username", "" },		/* PPP username */
 	{ "wan_pppoe_passwd", "" },		/* PPP password */
 	{ "wan_pppoe_idletime", "0" },		/* PPP idle time */
@@ -121,6 +124,8 @@ struct nvram_pair router_defaults[] = {
 	{ "wan_pppoe_service", "" },		/* PPPoE service name */
 	{ "wan_pppoe_ac", "" },			/* PPPoE access concentrator name */
 	{ "wan_pppoe_man", "1" },		/* PPPoE & MAN */
+	{ "pppoemwan_staticnum_x", "0" },
+	{ "pppoemwan_443", "0" },
 	{ "wan_pppoe_mtu", "1492" },		/* Negotiate MTU to the smaller of this value or the peer MRU */
 	{ "wan_pppoe_mru", "1492" },		/* Negotiate MRU to this value */
 	{ "wan_pptp_mtu", "1400" },		/* Negotiate MTU to the smaller of this value or the peer MRU */
@@ -174,7 +179,7 @@ struct nvram_pair router_defaults[] = {
 	{ "wl_closed", "0" },			/* Closed (hidden) network */
 	{ "wl_macmode", "disabled" },		/* "allow" only, "deny" only, or "disabled"(allow all) */
 	{ "wl_maclist", "" },			/* xx:xx:xx:xx:xx:xx ... */
-	{ "wl_wme", "0" },			/* WME mode (off|on) */
+	{ "wl_wme", "1" },			/* WME mode (off|on) */
 	{ "wl_wme_no_ack", "off" },		/* WME No-Acknowledgment mode */
 	{ "wl_auth_mode", "psk" },		/* Network authentication mode: WPAx Personal */
 	{ "wl_key", "1" },			/* Current WEP key */
@@ -288,7 +293,7 @@ struct nvram_pair router_defaults[] = {
 	{ "rt_HT_BW", "1" },
 	{ "rt_HT_EXTCHA", "1" },
 	{ "rt_HT_OpMode", "0" },
-	{ "rt_wme", "0" },
+	{ "rt_wme", "1" },
 	{ "rt_wme_no_ack", "off" },
 	{ "rt_IgmpSnEnable", "1" },
 	{ "rt_TxPower", "100" },
@@ -328,9 +333,9 @@ struct nvram_pair router_defaults[] = {
 	{ "rt_greenap", "0" },
 	{ "rt_HT_RDG", "0" },
 	{ "rt_HT_AMSDU", "0" },
+	{ "rt_HT_MpduDensity", "5" },
 	{ "rt_HT_80211KV", "1" },
 	{ "rt_HT_80211R", "0" },
-	{ "rt_HT_MpduDensity", "5" },
 #if defined (USE_WID_2G) && (USE_WID_2G==7615 || USE_WID_2G==7915)
 	{ "rt_HT_BAWinSize", "256" },
 	{ "rt_ldpc", "1" },
@@ -414,54 +419,7 @@ struct nvram_pair router_defaults[] = {
 	{ "hdd_spindt", "0" },
 	{ "hdd_apmoff", "0" },
 
-	/*autoreboot*/
-	{ "reboot_schedule_enable", "0" },
-	{ "reboot_schedule", "00000000000" },
-	
-	/* koolproxy AD */
-	{ "koolproxy_enable", "0"},
-	{ "koolproxy_https", "0"},
-	{ "koolproxy_set", "0"},
-	{ "hosts_ad", "0"},
-	{ "tv_hosts", "0"},
-	{ "koolproxy_video", "0"},
-	{ "koolproxy_cpu", "0"},
-	{ "koolproxy_prot", "0"},
-	{ "rules_list", "0"},
-	{ "koolproxy_txt_0", "https://cdn.jsdelivr.net/gh/houzi-/CDN/koolproxy.txt"},
-	{ "daily_txt_0", "https://cdn.jsdelivr.net/gh/houzi-/CDN/daily.txt"},
-	{ "kp_dat_0", "https://cdn.jsdelivr.net/gh/houzi-/CDN/kp.dat"},
-	{ "koolproxy_txt_1", "https://gitee.com/bkye/kp/raw/master/mrules/koolproxy.txt"},
-	{ "daily_txt_1", "https://gitee.com/bkye/kp/raw/master/mrules/daily.txt"},
-	{ "kp_dat_1", "https://dev.tencent.com/u/dtid_39de1afb676d0d78/p/kp/git/raw/master/kp.dat"},
-	{ "koolproxy_txt_2", ""},
-	{ "daily_txt_2", ""},
-	{ "kp_dat_2", ""},
-	{ "koolproxy_update", "0"} ,
-	{ "koolproxy_update_hour", "3" },
-	{ "kolproxy_update_min", "00" },
-	{ "ss_DNS_Redirect", "0" },
-	{ "kp_ip_x", "0" },
-	{ "kp_staticnum_x", "0" },
-	
-	/*WEB DIY*/
-	{ "w_ai", "1" },
-	{ "w_vpn_s", "1" },
-	{ "w_vpn_c", "1" },
-	{ "w_wnet", "1" },
-	{ "w_sys", "1" },
-	{ "w_usb", "1" },
-	{ "w_net", "1" },
-	{ "w_log", "1" },
-	{ "w_scu", "1" },
-	{ "w_dnsf", "1" },
-	{ "w_ss", "1" },
-	{ "w_men", "1" },
-	{ "w_adbyby", "1" },
-	{ "w_pdnsd", "1" },
-
-	{ "ip6_service", "" },
-	{ "ip6_ppe_on", "0" },
+	{ "ip6_service", "dhcp6" },			/* IPV6 */
 	{ "ip6_wan_if", "0" },
 
 	{ "ip6_6in4_remote", "" },
@@ -586,9 +544,6 @@ struct nvram_pair router_defaults[] = {
 	/* ttyd related */
 	{ "ttyd_enable", "0" },
 	{ "ttyd_port", "7681" },
-
-	/* NAPT66 */
-	{ "napt66_enable", "0" },
 #endif
 
 #if defined(APP_VLMCSD)
@@ -768,6 +723,110 @@ struct nvram_pair router_defaults[] = {
 	{ "frps_enable", "0" },
 #endif
 	
+#if defined(APP_SMARTDNS)	
+	/*SmartDns*/
+	{ "sdns_enable", "0" },
+	{ "snds_name", "smartdns" },
+	{ "sdns_port", "6053" },
+	{ "sdns_tcp_server", "0" },
+	{ "sdns_ipv6_server", "0" },
+	{ "snds_ip_change", "0" },
+	{ "snds_ip_change_time", "30" },
+	{ "sdns_ipv6", "0" },
+	{ "sdns_www", "0" },
+	{ "sdns_www", "0" },
+	{ "sdns_exp", "0" },
+	{ "snds_redirect", "0" },
+	{ "snds_cache", "0" },
+	{ "sdns_ttl", "300" },
+	{ "sdns_ttl_min", "60" },
+	{ "sdns_ttl_max", "86400" },
+	{ "sdns_coredump", "0" },
+	{ "sdnss_staticnum_x", "0" },
+	{ "sdnse_enable", "0" },
+	{ "sdnse_port", "7053" },
+	{ "sdnse_tcp", "0" },
+	{ "sdnse_speed", "0" },
+	{ "sdnse_name", "" },
+	{ "sdnse_address", "0" },
+	{ "sdnse_ns", "0" },
+	{ "sdnse_ipset", "0" },
+	{ "sdnse_as", "0" },
+	{ "sdnse_ipc", "0" },
+	{ "sdnse_cache", "0" },
+	{ "ss_white", "0" },
+	{ "ss_black", "0" },
+#endif
+	
+#if defined(APP_WYY)
+	/*UnblockNeteaseMusic*/
+	{ "wyy_enable", "0" },
+	{ "wyy_apptype", "cloud" },
+	{ "wyy_cloudserver", "cdn-shanghai.service.project-openwrt.eu.org:30000:30001" },
+	{ "wyy_musicapptype", "kuwo" },
+	{ "wyy_coustom_server", "" },
+	{ "wyy_coustom_music", "" },
+	{ "wyy_flac", "0" },
+	{ "wyy_staticnum_x", "0" },
+#endif
+
+#if defined(APP_ZEROTIER)
+	/*Zerotier*/
+	{ "zerotier_enable", "0" },
+	{ "zerotier_id", "" },
+	{ "zerotier_nat", "1" },
+	{ "zerotier_secret", "" },
+	{ "zero_staticnum_x", "0" },
+#endif
+
+#if defined(APP_DDNSTO)
+	/*DDNSTO*/
+	{ "ddnsto_enable", "0" },
+	{ "ddnsto_id", "" },
+#endif
+
+#if defined(APP_ALDRIVER)
+	/*阿里云盘*/
+	{ "aliyundrive_enable", "0" },
+	{ "ald_refresh_token", "" },
+	{ "ald_auth_user", "" },
+	{ "ald_auth_password", "" },
+	{ "ald_read_buffer_size", "10485760" },
+	{ "ald_cache_size", "1000" },
+	{ "ald_cache_ttl", "600" },
+	{ "ald_host", "0.0.0.0" },
+	{ "ald_port", "8089" },
+	{ "ald_root", "/" },
+	{ "ald_domain_id", "0" },
+	{ "ald_no_trash", "0" },
+	{ "ald_read_only", "0" },
+#endif
+	/*autoreboot*/
+	{ "reboot_schedule_enable", "0" },
+	{ "reboot_schedule", "00000000000" },
+
+#if defined(APP_WIREGUARD)
+	/*WIREGUARD*/
+	{ "wireguard_enable", "0" },
+	{ "wireguard_localip", "" },
+	{ "wireguard_localkey", "" },
+	{ "wireguard_peerip", "" },
+	{ "wireguard_peerkey", "" },
+#endif
+
+#if defined(APP_SQM)
+	/*SQM QoS*/
+	{ "sqm_enable", "0" },
+	{ "sqm_flag"  , "1" },
+	{ "sqm_active", "ra0" },
+	{ "sqm_down_speed", "0" },
+	{ "sqm_up_speed", "0" },
+	{ "sqm_debug_log", "0" },
+	{ "sqm_log_level", "5" },
+	{ "sqm_qdisc", "fq_codel" },
+	{ "sqm_script", "simple" },
+#endif
+
 #if defined(APP_SMARTDNS)
 	/*SmartDns*/
 	{ "sdns_enable", "0" },
@@ -812,27 +871,6 @@ struct nvram_pair router_defaults[] = {
 	{ "sdns_change1", "2" },
 	{ "sdns_change2", "2" },
 #endif
-	
-	/*UnblockNeteaseMusic*/
-	{ "wyy_enable", "0" },
-	{ "wyy_apptype", "cloud" },
-	{ "wyy_cloudserver", "cdn-shanghai.service.project-openwrt.eu.org:30000:30001" },
-	{ "wyy_musicapptype", "kuwo" },
-	{ "wyy_coustom_server", "" },
-	{ "wyy_coustom_music", "" },
-	{ "wyy_flac", "0" },
-	{ "wyy_staticnum_x", "0" },
-	
-	/*Zerotier*/
-	{ "zerotier_enable", "0" },
-	{ "zerotier_id", "" },
-	{ "zerotier_nat", "0" },
-	{ "zerotier_secret", "" },
-	{ "zero_staticnum_x", "0" },
-
-	{ "ss_watchcat", "1" },
-	{ "ss_update_chnroute", "0" },
-	{ "ss_update_gfwlist", "0" },
 
 	/* DHCP server parameters */
 	{ "dhcp_start", DEF_LAN_DHCP_BEG },	/* First assignable DHCP address */
@@ -846,7 +884,6 @@ struct nvram_pair router_defaults[] = {
 	{ "dhcp_dnsv6_x", "" },
 	{ "dhcp_wins_x", "" },
 	{ "dhcp_filter_aaa", "0" },
-	{ "dhcp_min_ttl", "0" },
 	{ "dhcp_verbose", "0" },		/* 0 : quiet, 1: verbose DHCP, 2: verbose DHCPv6, 3: verbose all */
 	{ "dhcp_static_x", "0" },
 	{ "dhcp_static_arp", "0" },
@@ -965,19 +1002,15 @@ struct nvram_pair router_defaults[] = {
 	{ "wol_mac_last", "" },
 	{ "gw_arp_ping", "0" },
 	{ "ez_action_short", "0" },
-#if !defined(BOARD_GPIO_BTN_RESET)
-	{ "ez_action_long", "15" },	/* Reset */
+#if defined(BOARD_CR660x)
+	{ "ez_action_long", "15" },		/* Reset */
 #else
 	{ "ez_action_long", "0" },
 #endif
-#if defined (BOARD_GPIO_BTN_FN1)
 	{ "fn1_action_short", "0" },
 	{ "fn1_action_long", "0" },
-#endif
-#if defined (BOARD_GPIO_BTN_FN2)
 	{ "fn2_action_short", "0" },
 	{ "fn2_action_long", "0" },
-#endif
 	{ "watchdog_cpu", "1" },
 	{ "front_led_all", "1" },
 	{ "front_led_wan", "2" },
@@ -990,7 +1023,6 @@ struct nvram_pair router_defaults[] = {
 	{ "ether_uport", "0" },		/* WAN port in AP mode is static upstream by default */
 	{ "ether_m2u", "2" },
 	{ "ether_green", "1" },
-	{ "ether_eee", "0" },
 #if defined(USE_RTL8367)
 	{ "ether_jumbo", "1" },
 #else
@@ -1023,19 +1055,10 @@ struct nvram_pair router_defaults[] = {
 	{ "ether_flow_lan7", "0" },
 #endif
 #endif
-
-#if defined(CONFIG_RALINK_MT7621) || (defined(CONFIG_RALINK_MT7620) && !defined(BOARD_N14U))
-#if defined(USE_MT7615_AP) || (USE_MT7915_AP) // hwnat is disabled by default
-	{ "hw_nat_mode", "2" },
-#else
-	{ "hw_nat_mode", "4" },
-#endif
-#else
 	{ "hw_nat_mode", "1" },
-#endif
 	{ "sw_nat_mode", "0" },
 #if defined(USE_SFE)
-	{ "sfe_enable", "0" },
+	{ "sfe_enable", "2" },
 #endif
 	{ "fw_syn_cook", "0" },
 	{ "fw_mac_drop", "0" },
@@ -1052,7 +1075,6 @@ struct nvram_pair router_defaults[] = {
 	{ "nf_alg_ftp1", "" },
 	{ "nf_alg_pptp", "0" },
 	{ "nf_alg_h323", "0" },
-	{ "nf_alg_rtsp", "0" },
 	{ "nf_alg_sip", "0" },
 
 	{ "help_enable", "1" },
@@ -1189,6 +1211,7 @@ struct nvram_pair tables_defaults[] = {
 	{ "v2_http2_path_x", "" },
 	{ "v2_tls_x", "0" },
 #endif
+
 #if defined(APP_SMARTDNS)
 	{ "sdnss_enable_x", "" },
 	{ "sdnss_name_x", "" },
@@ -1196,23 +1219,27 @@ struct nvram_pair tables_defaults[] = {
 	{ "sdnss_port_x", "" },
 	{ "sdnss_type_x", "" },
 	{ "sdnss_ipc_x", "" },
+	{ "sdnss_named_x", "" },
+	{ "sdnss_ipset_x", "" },
+	{ "sdnss_non_x", "" },
 #endif
-
-	{"koolproxy_mac_x", "" },
-	{"koolproxy_ip_x", "" },
-	{"koolproxy_name_x", "" },
-	
-	{"adbybyip_mac_x", "" },
-	{"adbybyip_ip_x", "" },
-	{"adbybyip_name_x", "" },
-	{"adbybyip_ip_road_x", "" },
-	
-	{"adbybyrules_x", "" },
-	{"adbybyrules_road_x", "" },
 
 	{ "dhcp_staticmac_x", "" },
 	{ "dhcp_staticip_x", "" },
 	{ "dhcp_staticname_x", "" },
+
+	{"pppoemwan_mac_x", "" },
+	{"pppoemwan_ip_x", "" },
+	{"pppoemwan_name_x", "" },
+	{"pppoemwan_interface_x", "" },
+
+	{"adbybyip_mac_x", "" },
+	{"adbybyip_ip_x", "" },
+	{"adbybyip_name_x", "" },
+	{"adbybyip_ip_road_x", "" },
+
+	{"adbybyrules_x", "" },
+	{"adbybyrules_road_x", "" },
 
 	{ "vpns_user_x", "" },
 	{ "vpns_pass_x", "" },

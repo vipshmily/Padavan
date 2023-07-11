@@ -24,6 +24,8 @@ mount -t tmpfs tmpfs /var   -o size=$size_var
 mkdir /dev/pts
 mount -t devpts devpts /dev/pts
 
+mount -t debugfs debugfs /sys/kernel/debug
+
 ln -sf /etc_ro/mdev.conf /etc/mdev.conf
 mdev -s
 
@@ -54,18 +56,32 @@ mkdir -p -m 755 /etc/Wireless
 mkdir -p -m 750 /etc/Wireless/RT2860
 mkdir -p -m 750 /etc/Wireless/iNIC
 
+# mount cgroupfs if kernel provides cgroups
+if [ -e /proc/cgroups ] && [ -d /sys/fs/cgroup ]; then
+	if ! mountpoint -q /sys/fs/cgroup; then
+		mount -t tmpfs -o uid=0,gid=0,mode=0755 cgroup /sys/fs/cgroup
+	fi
+	(cd /sys/fs/cgroup
+	for sys in $(awk '!/^#/ { if ($4 == 1) print $1 }' /proc/cgroups); do
+		mkdir -p $sys
+		if ! mountpoint -q $sys; then
+			if ! mount -n -t cgroup -o $sys cgroup $sys; then
+				rmdir $sys || true
+			fi
+		fi
+	done)
+	if [ -e /sys/fs/cgroup/memory/memory.use_hierarchy ]; then
+		echo 1 > /sys/fs/cgroup/memory/memory.use_hierarchy
+	fi
+fi
+
 # extract storage files
 mtd_storage.sh load
 
 touch /etc/resolv.conf
-cp -f /etc_ro/ld.so.cache /etc
 
 if [ -f /etc_ro/openssl.cnf ]; then
 	cp -f /etc_ro/openssl.cnf /etc/ssl
-fi
-
-if [ -f /etc_ro/ca-certificates.crt ]; then
-	ln -sf /etc_ro/ca-certificates.crt /etc/ssl/cert.pem
 fi
 
 # create symlinks
@@ -78,7 +94,6 @@ ln -sf /etc_ro/shells /etc/shells
 ln -sf /etc_ro/profile /etc/profile
 ln -sf /etc_ro/e2fsck.conf /etc/e2fsck.conf
 ln -sf /etc_ro/ipkg.conf /etc/ipkg.conf
-ln -sf /etc_ro/ld.so.conf /etc/ld.so.conf
 
 # tune linux kernel
 echo 65536        > /proc/sys/fs/file-max
@@ -133,3 +148,4 @@ echo 60 > /proc/sys/net/ipv4/tcp_keepalive_time
 if [ -x /etc/storage/start_script.sh ] ; then
 	/etc/storage/start_script.sh
 fi
+

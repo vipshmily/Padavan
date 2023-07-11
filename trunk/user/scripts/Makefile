@@ -4,12 +4,14 @@ all:
 clean:
 
 romfs:
-	./makedevlinks $(ROMFSDIR)
+	fakeroot ./makedevlinks $(ROMFSDIR)
 	$(ROMFSINST) /sbin/dev_init.sh
 	$(ROMFSINST) /sbin/reset_ss.sh
 	$(ROMFSINST) /sbin/mtd_storage.sh
 	$(ROMFSINST) -p +x $(THISDIR)/copyscripts.sh /usr/bin/copyscripts.sh
 	$(ROMFSINST) -p +x $(THISDIR)/autostart.sh /usr/bin/autostart.sh
+	$(ROMFSINST) -p +x $(THISDIR)/ap_script.sh /etc_ro/ap_script.sh
+	$(ROMFSINST) -p +x $(THISDIR)/sh_ezscript.sh /etc_ro/sh_ezscript.sh
 ifeq ($(STORAGE_ENABLED),y)
 	$(ROMFSINST) /sbin/automount.sh
 endif
@@ -20,7 +22,6 @@ endif
 ifdef CONFIG_MTD_UBI
 	$(ROMFSINST) /sbin/rwfs2ubi.sh
 endif
-	$(ROMFSINST) /etc_ro/ld.so.conf
 	$(ROMFSINST) /etc_ro/protocols
 	$(ROMFSINST) /etc_ro/services
 	$(ROMFSINST) /etc_ro/profile
