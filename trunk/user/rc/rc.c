@@ -1511,6 +1511,8 @@ handle_notifications(void)
 		}
 		else if (strcmp(entry->d_name, RCN_RESTART_SYSCTL) == 0)
 		{
+			int nf_nat_type = nvram_get_int("nf_nat_type");
+
 			restart_all_sysctl();
 
 			/* flush conntrack after NAT model changing */
