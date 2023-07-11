@@ -1064,6 +1064,7 @@ struct nvram_pair router_defaults[] = {
 #endif
 #else
 	{ "hw_nat_mode", "1" },
+#endif
 	{ "sw_nat_mode", "0" },
 #if defined(USE_SFE)
 	{ "sfe_enable", "2" },
