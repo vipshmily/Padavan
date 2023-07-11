@@ -122,7 +122,6 @@ dir_y							+= httpd
 dir_y							+= www
 dir_y							+= rc
 dir_$(CONFIG_FIRMWARE_INCLUDE_ANTFS)			+= antfs
-dir_$(CONFIG_FIRMWARE_INCLUDE_NAPT66)			+= napt66
 dir_$(CONFIG_FIRMWARE_INCLUDE_SFE)			+= shortcut-fe
 dir_y							+= infosvr
 dir_y							+= inadyn
@@ -150,6 +149,7 @@ dir_$(CONFIG_FIRMWARE_INCLUDE_SHADOWSOCKS)		+= ipt2socks
 dir_$(CONFIG_FIRMWARE_INCLUDE_SHADOWSOCKS)              +=resolveip
 dir_$(CONFIG_FIRMWARE_INCLUDE_ADGUARDHOME)     	        += adguardhome
 dir_$(CONFIG_FIRMWARE_INCLUDE_SHADOWSOCKS)	        += dns2tcp
+dir_$(CONFIG_FIRMWARE_INCLUDE_SHADOWSOCKS)              += dnsproxy
 ifeq ($(CONFIG_FIRMWARE_INCLUDE_SHADOWSOCKS),y)
 dir_$(CONFIG_FIRMWARE_INCLUDE_V2RAY)			+= v2ray
 dir_$(CONFIG_FIRMWARE_INCLUDE_XRAY)			+= xray
@@ -239,14 +239,12 @@ dir_$(CONFIG_FIRMWARE_INCLUDE_TRANSMISSION)		+= transmission
 dir_$(CONFIG_FIRMWARE_INCLUDE_ARIA)			+= aria2
 endif
 
-dir_$(CONFIG_FIRMWARE_INCLUDE_KOOLPROXY)		+= koolproxy
 dir_$(CONFIG_FIRMWARE_INCLUDE_ADBYBY)			+= adbyby
 dir_$(CONFIG_FIRMWARE_INCLUDE_ALIDDNS)			+= aliddns
 dir_$(CONFIG_FIRMWARE_INCLUDE_NVPPROXY)			+= nvpproxy
-#dir_$(CONFIG_FIRMWARE_INCLUDE_NPC)			+= npc
 dir_$(CONFIG_FIRMWARE_INCLUDE_DDNSTO)	                += ddnsto
 dir_$(CONFIG_FIRMWARE_INCLUDE_ALDRIVER)	                += aliyundrive-webdav
-dir_$(CONFIG_FIRMWARE_INCLUDE_SQM)                      += sqm-qos
+#dir_$(CONFIG_FIRMWARE_INCLUDE_SQM)                      += sqm-qos
 ifdef CONFIG_MTD_UBI
 ifneq ($(STORAGE_ENABLED),y)
 dir_y							+= optware

@@ -913,6 +913,13 @@ init_router(void)
 	if (log_remote)
 		start_logger(1);
 
+#if defined (BOARD_HC5761A)
+	cpu_gpio_mode_set_bit(38, 1);
+	cpu_gpio_mode_set_bit(39, 0);
+	cpu_gpio_set_pin_direction(BOARD_GPIO_PWR_USB, 1);
+	cpu_gpio_set_pin(BOARD_GPIO_PWR_USB, BOARD_GPIO_PWR_USB_ON);
+#endif
+
 	start_dns_dhcpd(is_ap_mode);
 #if defined (APP_SMBD) || defined (APP_NMBD)
 	start_wins();
@@ -1505,6 +1512,12 @@ handle_notifications(void)
 		else if (strcmp(entry->d_name, RCN_RESTART_SYSCTL) == 0)
 		{
 			restart_all_sysctl();
+
+			/* flush conntrack after NAT model changing */
+			if (nvram_nf_nat_type != nf_nat_type) {
+				nvram_nf_nat_type = nf_nat_type;
+				flush_conntrack_table(NULL);
+			}
 		}
 		else if (!strcmp(entry->d_name, RCN_RESTART_WIFI5))
 		{
