@@ -1085,6 +1085,7 @@ stop_wan(void)
 		"udpxy",
 		"udhcpc",
 		"zcip",
+		"pppoe-relay",
 		"detect_wan",
 		NULL
 	};
@@ -1376,7 +1377,11 @@ wan_up(char *wan_ifname, int unit, int is_static)
 
 	/* call custom user script */
 	if (check_if_file_exist(script_postw))
-		doSystem("%s %s %s %s", script_postw, "up", wan_ifname, wan_addr);
+		{doSystem("%s %s %s %s", script_postw, "up", wan_ifname, wan_addr);}
+	if (nvram_match("zerotier_enable", "1"))
+		{doSystem("/usr/bin/zerotier.sh start");}
+	if (nvram_match("pppoemwan_enable", "1"))
+		{doSystem("/usr/bin/detect.sh");}
 }
 
 void
@@ -1447,7 +1452,9 @@ wan_down(char *wan_ifname, int unit, int is_static)
 	set_wan_unit_value_int(unit, "bytes_tx", 0);
 
 	if (check_if_file_exist(script_postw))
-		doSystem("%s %s %s %s", script_postw, "down", wan_ifname, wan_addr);
+		{doSystem("%s %s %s %s", script_postw, "down", wan_ifname, wan_addr);}
+	if (nvram_match("pppoemwan_enable", "1"))
+	{doSystem("/usr/bin/detect.sh");}
 }
 
 void
