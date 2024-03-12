@@ -6,6 +6,7 @@ all: extract_test config_test
 
 extract_test:
 	( if [ ! -d $(SRC_NAME) ]; then \
+	        tar xf $(SRC_NAME).tar.xz; \
 		git clone https://github.com/shadowsocks/simple-obfs.git ; \
 		cd $(SRC_NAME) ; \
 		git submodule update --init --recursive ; \
@@ -31,11 +32,11 @@ configure:
 	)
 
 clean:
-#	if [ -f $(SRC_NAME)/Makefile ] ; then \
-#		$(MAKE) -C $(SRC_NAME) distclean ; \
-#	fi ; \
-#	rm -f config_done
+	if [ -f $(SRC_NAME)/Makefile ] ; then \
+		$(MAKE) -C $(SRC_NAME) distclean ; \
+	fi ; \
+	rm -f config_done
 
 romfs:
-	$(ROMFSINST) -p +x $(THISDIR)/$(SRC_NAME)/src/obfs-server /usr/bin/obfs-server
+#	$(ROMFSINST) -p +x $(THISDIR)/$(SRC_NAME)/src/obfs-server /usr/bin/obfs-server
 	$(ROMFSINST) -p +x $(THISDIR)/$(SRC_NAME)/src/obfs-local /usr/bin/obfs-local

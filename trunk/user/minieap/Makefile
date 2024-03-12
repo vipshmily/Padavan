@@ -1,9 +1,9 @@
-SRC_NAME = minieap-0.92.1-pdv
-SRC_URL = https://github.com/hanwckf/minieap/archive/v0.92.1-pdv.zip
+SRC_NAME = minieap-0.93.7
+SRC_URL = https://codeload.github.com/AutoCONFIG/minieap/zip/refs/tags/0.93.7
 THISDIR = $(shell pwd)
 
 all: download_test extract_test
-	$(MAKE) -C $(SRC_NAME) LIBICONV_STANDALONE=true
+	    $(MAKE) -j$(HOST_NCPU) -C $(SRC_NAME) LIBICONV_STANDALONE=true
 
 download_test: 
 	( if [ ! -f $(THISDIR)/$(SRC_NAME).zip ]; then \

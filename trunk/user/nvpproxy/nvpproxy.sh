@@ -1,6 +1,7 @@
 #!/bin/bash
-vpnproxy_wan_port=9999
-vpnproxy_vpn_port=1194
+nvpproxy_enable=`nvram get nvpproxy_enable`
+vpnproxy_wan_port=`nvram get nvpproxy_wan_port`
+vpnproxy_vpn_port=`nvram get nvpproxy_vpn_port`
 
 vpnproxy_close () {
 
@@ -11,9 +12,11 @@ killall -9 nvpproxy
 
 vpnproxy_start () {
 
-logger -t "【vpnproxy】" "运行 /usr/bin/nvpproxy"
-eval "/usr/bin/nvpproxy -port=$vpnproxy_wan_port -proxy=127.0.0.1:$vpnproxy_vpn_port " &
-vpnproxy_port_dpt
+if [ "$nvpproxy_enable" = "1" ] ; then
+	logger -t "【vpnproxy】" "运行 /usr/bin/nvpproxy"
+	eval "/usr/bin/nvpproxy -port=$vpnproxy_wan_port -proxy=127.0.0.1:$vpnproxy_vpn_port " &
+	vpnproxy_port_dpt
+fi
 }
 
 

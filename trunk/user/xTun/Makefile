@@ -1,13 +1,13 @@
-SRC_NAME = xTun-0.6.3
-SRC_URL = https://github.com/lparam/xTun/archive/v0.6.3.tar.gz
-LIBUV_SRC_NAME = libuv-1.22.0
-LIBUV_SRC_URL = https://github.com/libuv/libuv/archive/v1.22.0.tar.gz
-LIBSODIUM__SRC_NAME = libsodium-1.0.16
-LIBSODIUM_SRC_URL = https://github.com/jedisct1/libsodium/archive/1.0.16.tar.gz
+SRC_NAME = xTun-0.6.5
+SRC_URL = https://github.com/lparam/xTun/archive/v0.6.5.tar.gz
+LIBUV_SRC_NAME = libuv-1.47.0
+LIBUV_SRC_URL = https://github.com/libuv/libuv/archive/v1.47.0.tar.gz
+LIBSODIUM__SRC_NAME = libsodium-1.0.19
+LIBSODIUM_SRC_URL = https://github.com/jedisct1/libsodium/archive/1.0.19.tar.gz
 THISDIR = $(shell pwd)
 
 all: download_test extract_test
-	$(MAKE) -C $(SRC_NAME) HOST=$(HOST_TARGET)
+	    $(MAKE) -j$(HOST_NCPU) -C $(SRC_NAME) HOST=$(HOST_TARGET)
 
 download_test:
 	( if [ ! -f $(SRC_NAME).tar.gz ]; then \

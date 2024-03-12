@@ -2,10 +2,10 @@
 
 DIR="toolchain-3.4.x"
 DL_NAME="mipsel-linux-uclibc.tar.xz"
-DL_URL="https://github.com/hanwckf/padavan-toolchain/releases/download/v1.1/$DL_NAME"
+DL_URL="https://github.com/vipshmily/Padavan-build/releases/download/toolchain/$DL_NAME"
 
 if [ -d $DIR ]; then
-	echo "$DIR exists!"
+	echo "$DIR already exists!"
 	exit
 fi
 

@@ -1,13 +1,19 @@
-SRC_NAME=mtd-utils-2.1.3
+SRC_NAME=mtd-utils-2.1.6
+SRC_URL = https://codeload.github.com/sigma-star/mtd-utils/tar.gz/refs/tags/v2.1.6
 
 THISDIR = $(shell pwd)
 
-all: extract_test config_test
+all: download_test extract_test config_test
 	$(MAKE) -j$(HOST_NCPU) -C $(SRC_NAME)
+
+download_test:
+	( if [ ! -f $(SRC_NAME).tar.gz ]; then \
+		wget -t5 --timeout=20 --no-check-certificate -O $(SRC_NAME).tar.gz $(SRC_URL); \
+	fi )
 
 extract_test:
 	( if [ ! -d $(SRC_NAME) ]; then \
-		tar xf $(SRC_NAME).tar.bz2; \
+		tar xzf $(SRC_NAME).tar.gz; \
 	fi )
 
 config_test:
@@ -19,14 +25,18 @@ config_test:
 
 configure:
 	( cd $(SRC_NAME) ; \
+	autoreconf -fvi ; \
 	./configure \
 		--prefix= \
 		--enable-static \
 		--disable-shared \
 		--disable-tests \
+		--disable-install-tests \
 		--without-jffs \
 		--without-xattr \
 		--without-ubifs \
+		--without-zstd \
+		--without-crypto \
 		--without-lzo \
 		--host=$(HOST_TARGET) \
 		--build=$(HOST_BUILD) ; \

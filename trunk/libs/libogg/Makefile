@@ -1,8 +1,8 @@
-SRC_NAME=libogg-1.3.3
+SRC_NAME=libogg-1.3.5
 SRC_URL=http://downloads.xiph.org/releases/ogg/$(SRC_NAME).tar.xz
 
 all: download_test extract_test config_test
-	$(MAKE) -C $(SRC_NAME)
+	    $(MAKE) -j$(HOST_NCPU) -C $(SRC_NAME)
 
 download_test:
 	( if [ ! -f $(SRC_NAME).tar.xz ]; then \
@@ -11,7 +11,7 @@ download_test:
 
 extract_test:
 	( if [ ! -d $(SRC_NAME) ]; then \
-		tar xJf $(SRC_NAME).tar.xz; \
+		tar xf $(SRC_NAME).tar.xz; \
 		patch -d $(SRC_NAME) -p1 -i ../disable-doc.patch; \
 	fi )
  

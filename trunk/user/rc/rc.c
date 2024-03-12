@@ -161,6 +161,7 @@ load_usb_modules(void)
 		char xhci_param[32];
 		snprintf(xhci_param, sizeof(xhci_param), "%s=%d", "usb3_disable", nvram_get_int("usb3_disable"));
 		module_smart_load("xhci_hcd", xhci_param);
+		module_smart_load("xhci_mtk", NULL);
 	}
 #else
 	module_smart_load("ehci_hcd", NULL);
@@ -287,6 +288,9 @@ init_gpio_leds_buttons(void)
 #elif defined (BOARD_Q20)
 	cpu_gpio_set_pin_direction(14, 1);
 	cpu_gpio_set_pin(14, LED_ON); // set GPIO to low
+#elif defined (BOARD_EA7500)
+	cpu_gpio_set_pin_direction(BOARD_GPIO_LED_POWER, 1);
+	cpu_gpio_set_pin(BOARD_GPIO_LED_POWER, LED_OFF);
 #endif
 	cpu_gpio_set_pin_direction(BOARD_GPIO_LED_POWER, 1);
 	LED_CONTROL(BOARD_GPIO_LED_POWER, LED_ON);
@@ -935,9 +939,7 @@ init_router(void)
 	notify_leds_detect_link();
 
 	start_rwfs_optware();
-#if defined(APP_NAPT66)
-	start_napt66();
-#endif
+
 	if (init_crontab()) {
 		write_storage_to_mtd();
 		restart_crond();
@@ -1319,10 +1321,10 @@ handle_notifications(void)
 			restart_vlmcsd();
 		}
 #endif
-#if defined(APP_WYY)
-		else if (strcmp(entry->d_name, RCN_RESTART_WYY) == 0)
+#if defined(APP_ALIDDNS)
+		else if (strcmp(entry->d_name, RCN_RESTART_ALIDDNS) == 0)
 		{
-			restart_wyy();
+			restart_aliddns();
 		}
 #endif
 #if defined(APP_ZEROTIER)
@@ -1331,14 +1333,29 @@ handle_notifications(void)
 			restart_zerotier();
 		}
 #endif
-#if defined(APP_KOOLPROXY)
-		else if (strcmp(entry->d_name, RCN_RESTART_KOOLPROXY) == 0)
+#if defined(APP_DDNSTO)
+		else if (strcmp(entry->d_name, RCN_RESTART_DDNSTO) == 0)
 		{
-			restart_koolproxy();
+			restart_ddnsto();
 		}
-		else if (strcmp(entry->d_name, RCN_RESTART_KPUPDATE) == 0)
+#endif
+
+#if defined(APP_ALDRIVER)
+		else if (strcmp(entry->d_name, RCN_RESTART_ALDRIVER) == 0)
 		{
-			update_kp();
+			restart_aldriver();
+		}
+#endif
+#if defined(APP_WIREGUARD)
+		else if (strcmp(entry->d_name, RCN_RESTART_WIREGUARD) == 0)
+		{
+			restart_wireguard();
+		}
+#endif
+#if defined(APP_SQM)
+		else if (strcmp(entry->d_name, RCN_RESTART_SQM) == 0)
+		{
+			restart_sqm();
 		}
 #endif
 #if defined(APP_ADBYBY)
@@ -1367,18 +1384,6 @@ handle_notifications(void)
 		else if (strcmp(entry->d_name, RCN_RESTART_FRP) == 0)
 		{
 			restart_frp();
-		}
-#endif
-#if defined(APP_CADDY)
-		else if (strcmp(entry->d_name, RCN_RESTART_CADDY) == 0)
-		{
-			restart_caddy();
-		}
-#endif
-#if defined(APP_ALIDDNS)
-		else if (strcmp(entry->d_name, RCN_RESTART_ALIDDNS) == 0)
-		{
-			restart_aliddns();
 		}
 #endif
 #if defined(APP_DNSFORWARDER)
@@ -1679,8 +1684,8 @@ static const applet_rc_t applets_rc[] = {
 
 	{ "watchdog",		watchdog_main		},
 	{ "rstats",		rstats_main		},
-
 	{ "mtk_gpio",		cpu_gpio_main		},
+
 #if defined (USE_MTK_ESW) || defined (USE_MTK_GSW)
 	{ "mtk_esw",		mtk_esw_main		},
 #endif

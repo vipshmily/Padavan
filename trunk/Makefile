@@ -17,13 +17,9 @@ include .config
 include versions.inc
 
 ifeq ($(CONFIG_WITHOUT_KERNEL),y)
-all: tools unpack_trx libc_only libs_only user_only romfs image
+all: dep tools unpack_trx libc_only libs_only user_only romfs image
 else
-ifeq ($(CONFIG_FIRMWARE_TYPE_ROOTFS_IN_RAM),y)
-all: tools modules libc_only libs_only user_only romfs linux image
-else
-all: tools linux libc_only libs_only user_only romfs image
-endif
+all: dep tools linux libc_only libs_only user_only romfs image
 endif
 ############################################################################
 #
@@ -34,7 +30,7 @@ ROOTDIR        = $(shell pwd)
 HOSTCC         = gcc
 ROMFSINST      = $(ROOTDIR)/tools/romfs-inst.sh
 TFTPDIR        = /tftpboot
-PATH          := $(PATH):$(ROOTDIR)/tools:$(ROOTDIR)/tools/go/go/bin
+PATH          := $(if $(filter y,$(CONFIG_CCACHE)),$(CONFIG_CROSS_COMPILER_ROOT)/lib/ccache:,)$(CONFIG_CROSS_COMPILER_ROOT)/bin:$(PATH):$(ROOTDIR)/tools
 
 VERSIONSTR     = $(CONFIG_VENDOR)/$(CONFIG_PRODUCT) Version $(VERSIONPKG)
 
@@ -59,12 +55,10 @@ CONFIG_SHELL := $(shell if [ -x "$$BASH" ]; then echo $$BASH; \
 	  else if [ -x /bin/bash ]; then echo /bin/bash; \
 	  else echo sh; fi ; fi)
 
-ifneq ($(findstring linux-3.4,$(LINUXDIR)),)
 FIRMWARE_KERNEL_VER="3.4"
-CONFIG_CROSS_COMPILER_ROOT = $(CONFIG_TOOLCHAIN_DIR)/toolchain-3.4.x
 CONFIG_CROSS_COMPILER_PATH = $(CONFIG_CROSS_COMPILER_ROOT)/bin
+CONFIG_CMAKE_TOOLCHAIN_FILE = $(ROOTDIR)/vendors/cmake/cross-mipsel-linux.cmake
 KERNEL_HEADERS_PATH = $(CONFIG_CROSS_COMPILER_ROOT)/mipsel-linux-uclibc/sysroot/usr/include
-endif
 
 ifeq (config.arch,$(wildcard config.arch))
 ifeq ($(filter %_default, $(MAKECMDGOALS)),)
@@ -91,7 +85,7 @@ export PROJECT_CONFIG LINUX_CONFIG ROOTDIR LINUXDIR ROMFSDIR SCRIPTSDIR
 export FIRMWARE_KERNEL_VER FIRMWARE_ROOTFS_VER FIRMWARE_BUILDS_VER FIRMWARE_BUILDS_REV
 export VERSIONPKG VERSIONSTR ROMFSINST PATH IMAGEDIR RELFILES TFTPDIR
 export KERNEL_HEADERS_PATH CONFIG_CROSS_COMPILER_ROOT CONFIG_CROSS_COMPILER_PATH
-export UNSQSHFS_TOOL CONFIG_WITHOUT_KERNEL
+export CONFIG_CMAKE_TOOLCHAIN_FILE UNSQSHFS_TOOL CONFIG_WITHOUT_KERNEL
 
 ############################################################################
 
@@ -164,11 +158,18 @@ sparseall:
 subdirs: libs
 	for dir in $(DIRS) ; do [ ! -d $$dir ] || $(MAKEARCH) -C $$dir || exit 1 ; done
 
-dep:
-	@if [ ! -f $(LINUXDIR)/.config ] ; then \
-		echo "ERROR: you need to do a 'make config' first" ; \
-		exit 1 ; \
-	fi
+.PHONY: config dep
+config:
+	@./configure
+ifeq ($(CONFIG_CCACHE),y)
+	@mkdir -p $(CONFIG_CROSS_COMPILER_ROOT)/lib/ccache
+	@for bin in gcc g++ cc c++; do \
+		ln -sf /usr/bin/ccache $(CONFIG_CROSS_COMPILER_ROOT)/lib/ccache/$$bin; \
+		ln -sf /usr/bin/ccache $(CONFIG_CROSS_COMPILER_ROOT)/lib/ccache/mipsel-linux-uclibc-$$bin; \
+	done
+endif
+
+dep: config
 	$(MAKEARCH_KERNEL) -C $(LINUXDIR) modules_prepare
 	$(MAKEARCH_KERNEL) -C $(LINUXDIR) dep
 
@@ -189,6 +190,14 @@ clean:
 	rm -rf $(IMAGEDIR)
 	rm -rf $(LINUXDIR)/net/ipsec/alg/libaes $(LINUXDIR)/net/ipsec/alg/perlasm
 	rm -f $(LINUXDIR)/arch/mips/ramdisk/*.gz
+
+.PHONY: tools_clean
+tools_clean:
+	$(MAKE) -C tools clean
+
+.PHONY: kernel_clean
+kernel_clean:
+	$(MAKEARCH_KERNEL) -C $(LINUXDIR) distclean
 
 %_romfs:
 	@case "$(@)" in \
