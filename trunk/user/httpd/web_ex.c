@@ -51,7 +51,6 @@
 #include <notify_rc.h>
 #include <rstats.h>
 #include <bin_sem_asus.h>
-#include <gpioutils.h>
 
 #include "common.h"
 #include "nvram_x.h"
