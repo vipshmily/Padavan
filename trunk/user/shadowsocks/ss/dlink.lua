@@ -7,7 +7,6 @@ require 'nixio'
 local cjson = require "cjson"
 -- these global functions are accessed all the time by the event handler
 -- so caching them is worth the effort
-local luci = luci
 local tinsert = table.insert
 local ssub, slen, schar, sbyte, sformat, sgsub = string.sub, string.len, string.char, string.byte, string.format, string.gsub
 local b64decode = nixio.bin.b64decode
@@ -389,7 +388,7 @@ local function processData(szType, content)
 end
 -- wget
 local function wget(url)
-	local stdout = io.popen('curl -s --connect-timeout 15 --retry 5 "' .. url .. '"')
+	local stdout = io.popen('curl -k -s --connect-timeout 15 --retry 5 "' .. url .. '"')
 	local sresult = stdout:read("*all")
     return trim(sresult)
 end
@@ -548,5 +547,3 @@ end
 		log('新增节点数量: ' .. add, '删除节点数量: ' .. del)
 		log('订阅更新成功')
 		end
-
-

@@ -1,17 +1,17 @@
-SRC_NAME=mbedtls-2.7.12
-SRC_URL=https://tls.mbed.org/download/mbedtls-2.7.12-gpl.tgz
+SRC_NAME=mbedtls-2.28.7
+SRC_URL=https://github.com/Mbed-TLS/mbedtls/archive/v2.28.7.tar.gz
 
 all: download_test extract_test config_test
 	$(MAKE) -j$(HOST_NCPU) -C $(SRC_NAME)/build
 
 download_test:
-	( if [ ! -f $(SRC_NAME).tgz ]; then \
+	( if [ ! -f $(SRC_NAME).tar.gz ]; then \
 		wget -t5 --timeout=20 --no-check-certificate -O $(SRC_NAME).tgz $(SRC_URL); \
 	fi )
 
 extract_test:
 	( if [ ! -d $(SRC_NAME) ]; then \
-		tar -xf $(SRC_NAME).tgz; \
+		tar zxf $(SRC_NAME).tar.gz; \
 	fi )
 
 config_test:
@@ -23,15 +23,15 @@ config_test:
 
 configure:
 	( mkdir -p $(SRC_NAME)/build && cd $(SRC_NAME)/build ; \
-	cmake \
+	cmake -DCMAKE_BUILD_TYPE=Release \
 	-DCMAKE_INSTALL_PREFIX=$(STAGEDIR) \
-	-DCMAKE_TOOLCHAIN_FILE=../../cross-mipsel-linux.cmake \
-	-DUSE_SHARED_MBEDTLS_LIBRARY=On \
-	-DUSE_STATIC_MBEDTLS_LIBRARY=Off \
-	-DENABLE_TESTING=Off \
-	-DENABLE_PROGRAMS=Off \
-	-DLINK_WITH_PTHREAD=On \
-	-DENABLE_ZLIB_SUPPORT=On \
+	-DCMAKE_TOOLCHAIN_FILE=$(CONFIG_CMAKE_TOOLCHAIN_FILE) \
+	-DUSE_SHARED_MBEDTLS_LIBRARY=ON \
+	-DUSE_STATIC_MBEDTLS_LIBRARY=OFF \
+	-DENABLE_TESTING=OFF \
+	-DENABLE_PROGRAMS=OFF \
+	-DLINK_WITH_PTHREAD=ON \
+	-DENABLE_ZLIB_SUPPORT=ON \
 	.. \
 	)
 

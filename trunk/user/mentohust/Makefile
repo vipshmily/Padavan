@@ -1,11 +1,11 @@
-SRC_NAME = mentohust-1-master
+SRC_NAME = mentohust-master
 #https://github.com/hanwckf/mentohust-1
 THISDIR = $(shell pwd)
 
 LDFLAGS += -L$(STAGEDIR) -liconv
 
 all: extract_test config_test
-	$(MAKE) -C $(SRC_NAME)
+	    $(MAKE) -j$(HOST_NCPU) -C $(SRC_NAME)
 
 
 extract_test:

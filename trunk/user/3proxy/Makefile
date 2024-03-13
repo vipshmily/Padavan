@@ -1,9 +1,9 @@
-SRC_NAME = 3proxy-0.9.3
-SRC_URL = https://github.com/z3APA3A/3proxy/releases/download/0.9.3/3proxy-0.9.3.tar.gz
+SRC_NAME = 3proxy-0.9.4
+SRC_URL = https://github.com/z3APA3A/3proxy/releases/download/0.9.4/3proxy-0.9.4.tar.gz
 THISDIR = $(shell pwd)
 
 all: download_test extract_test
-	$(MAKE) -C $(SRC_NAME) -f Makefile.Linux
+	    $(MAKE) -j$(HOST_NCPU) -C $(SRC_NAME) -f Makefile.Linux
 
 download_test:
 	( if [ ! -f $(SRC_NAME).tar.gz ]; then \
