@@ -288,6 +288,7 @@
 			{"lprd_enable", "", NULL, EVM_RESTART_SPOOLER},
 			{"rawd_enable", "", NULL, EVM_RESTART_SPOOLER},
 			{"help_enable", "", NULL, FALSE},
+                        {"reboot_mode", "", NULL, FALSE},
 			{"reboot_schedule_enable", "", NULL, FALSE},
 			{"reboot_schedule", "", NULL, FALSE},
 			{"scripts.start_script.sh", "File", NULL, EVM_BLOCK_UNSAFE},
@@ -438,6 +439,7 @@
 	struct variable variables_IP6Connection[] = {
 #if defined (USE_IPV6)
 			{"ip6_service", "", NULL, EVM_RESTART_IPV6},
+                        {"ip6_ppe_on", "", NULL, EVM_RESTART_FIREWALL}, 
 			{"ip6_wan_if", "", NULL, EVM_RESTART_IPV6},
 			{"ip6_6in4_remote", "", NULL, EVM_RESTART_IPV6},
 			{"ip6_6to4_relay", "", NULL, EVM_RESTART_IPV6},
@@ -543,7 +545,7 @@
 			{"fw_mac_drop", "", NULL, EVM_RESTART_FIREWALL},
 			{"wan_nat_x", "", NULL, EVM_RESTART_NETFILTER},
 			{"nf_nat_loop", "", NULL, EVM_RESTART_NETFILTER},
-			{"nf_nat_type", "", NULL, EVM_RESTART_NETFILTER},
+			{"nf_nat_type", "", NULL, EVM_RESTART_SYSCTL},
 			{"nf_max_conn", "", NULL, EVM_RESTART_SYSCTL},
 			{"nf_alg_ftp0", "", NULL, EVM_RESTART_FIREWALL},
 			{"nf_alg_ftp1", "", NULL, EVM_RESTART_FIREWALL},
@@ -602,6 +604,7 @@
 			{"dhcp_wins_x", "", NULL, EVM_RESTART_DHCPD|EVM_REAPPLY_VPNSVR},
 			{"dhcp_verbose", "", NULL, EVM_RESTART_DHCPD},
 			{"dhcp_filter_aaa", "", NULL, EVM_RESTART_DHCPD},
+                        {"dhcp_min_ttl", "", NULL, EVM_RESTART_DHCPD},
 			{"dhcp_static_x", "", NULL, EVM_RESTART_DHCPD},
 			{"dhcp_static_arp", "", NULL, EVM_RESTART_DHCPD},
 			{"dhcp_staticnum_x", "", NULL, EVM_RESTART_DHCPD},
@@ -635,7 +638,7 @@
 			{"ether_led1", "", NULL, EVM_RESTART_SWITCH_CFG},
 			{"ether_jumbo", "", NULL, EVM_RESTART_SWITCH_CFG},
 			{"ether_green", "", NULL, EVM_RESTART_SWITCH_CFG},
-
+                        {"ether_eee", "", NULL, EVM_RESTART_SWITCH_CFG},
 			{"ether_link_wan",  "", NULL, EVM_RESTART_SWITCH_CFG},
 			{"ether_flow_wan",  "", NULL, EVM_RESTART_SWITCH_CFG},
 			{"ether_link_lan1", "", NULL, EVM_RESTART_SWITCH_CFG},
