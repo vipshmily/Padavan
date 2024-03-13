@@ -59,7 +59,7 @@ showMRULESList();
 function showmenu(){
 showhide_div('allink', found_app_aliddns());
 showhide_div('ddlink', found_app_ddnsto());
-showhide_div('wilink', found_app_wireguard());
+showhide_div('wilink', 1);
 }
 
 function applyRule(){
