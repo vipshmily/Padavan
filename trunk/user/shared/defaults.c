@@ -584,12 +584,8 @@ struct nvram_pair router_defaults[] = {
 	{ "ss_cgoups_mem_s", "20M" },
 	{ "ss_watchcat", "1" },
 	{ "lan_con", "0" },
-	{ "ss_adblock", "0" },
-	{ "ss_adblock_url", "https://anti-ad.net/anti-ad-for-dnsmasq.conf"},
-	{ "ss_update_chnroute", "1" },
 	{ "ss_chnroute_url", "https://ispip.clang.cn/all_cn.txt"},
-	{ "ss_update_gfwlist", "1" },
-	{ "ss_gfwlist_url", "https://cdn.jsdelivr.net/gh/YW5vbnltb3Vz/domain-list-community@release/gfwlist.txt"},
+	{ "ss_adblock_url", "https://gitee.com/privacy-protection-tools/anti-ad/raw/master/anti-ad-for-dnsmasq.conf"},
 	{ "ss_schedule_enable", "0" },
 	{ "ss_schedule", "00000000000" },
 

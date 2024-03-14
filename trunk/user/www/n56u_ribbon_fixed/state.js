@@ -861,7 +861,7 @@ function shutdown(){
 	var $j = jQuery.noConflict();
 	$j.post('/apply.cgi',
 	{
-		'action_mode': ' Shutdown ',
+		'action_mode': ' FreeMemory ',
 		'current_page': 'Main_LogStatus_Content.asp'
 	});
 }
